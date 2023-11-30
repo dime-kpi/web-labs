@@ -78,7 +78,9 @@ function Task3() {
 
 function Task4() {
     let Student = Task2();
-    Student.showData = function () {
+
+    // Adding showData method using prototype
+    Student.__proto__.showData = function () {
         console.log("Show data:\nSpecialty: " + this.Specialty + "\nGroup: " + this.Group);
     };
 
@@ -86,37 +88,40 @@ function Task4() {
     Student.showData();
 }
 
-function Task5() {
-    let Student = {
-        Specialty: "",
-        Group: "",
 
-        showData: function () {
-            return "Specialty: " + this.Specialty + "\nGroup: " + this.Group + "\nSubjects: " + this.Subjects + "\nGrades: " + this.Grades;
-        }
+function Task5() {
+    function Student() {
+        this.Specialty = "";
+        this.Group = "";
+    }
+
+    Student.prototype.showData = function () {
+        return "Specialty: " + this.Specialty + "\nGroup: " + this.Group + "\nSubjects: " + this.Subjects + "\nGrades: " + this.Grades;
     };
 
-    let Progress = Object.create(Student);
-    Progress.Excluded = 0;
+    function Progress() {
+        Student.call(this);
+        this.Excluded = 0;
+    }
 
-    Progress.calculateAverageGrage = function () {
+    Progress.prototype = Object.create(Student.prototype);
+    Progress.prototype.constructor = Progress;
+
+    Progress.prototype.calculateAverageGrade = function () {
         let sum = this.Grades.reduce((total, grade) => total + grade, 0);
         return "Average Grade: " + (sum / this.Grades.length).toFixed(2);
     };
 
-    Student.showData = function () {
-        return "Specialty: " + this.Specialty + "\nGroup: " + this.Group + "\nSubjects: " + this.Subjects + "\nGrades: " + this.Grades;
-    };
-
-    let progressObject = Object.create(Progress);
+    let progressObject = new Progress();
     progressObject.Specialty = "142";
     progressObject.Group = "AG-01";
     progressObject.Subjects = ["Physics", "Math", "Chemistry"];
     progressObject.Grades = [88, 92, 95];
 
     console.log(progressObject.showData());
-    console.log(progressObject.calculateAverageGrage());
+    console.log(progressObject.calculateAverageGrade());
 }
+
 
 function Task6() {
     class GroupClass {
@@ -191,5 +196,4 @@ function Task6() {
     progressClassObject.Grades = [88, 92, 95];
     console.log(progressClassObject.showData());
     console.log(progressClassObject.calculateAverageGrade());
-
 }
